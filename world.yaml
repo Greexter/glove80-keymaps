@@ -6,7 +6,7 @@ transforms:
   A: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave,   LALT: tilde,   RALT: ring    }
   Y: { base: acute,   LCTL: diaeresis                                                                }
   O: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave,   LALT: tilde,   RALT: slash   }
-  U: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave                                 }
+  U: { base: acute,  LCTL: diaeresis, RCTL: circumflex, RSFT: ring,    LALT: grave                             }
   consonants:
      { base: cedilla, LCTL: ntilde,    RCTL: eszett                                                  }
   quotes_left:
@@ -17,6 +17,19 @@ transforms:
      { base: dollar,  LCTL: euro,      RCTL: pound,      RSFT: generic, LALT: yen,     RALT: won     }
 
 characters:
+  D:
+    caron:         { lower: "ď",  upper: "Ď"  }
+  T:
+    caron:         { lower: "ť",  upper: "Ť"  }
+  R:
+    caron:         { lower: "ř",  upper: "Ř"  }
+  S:
+    caron:         { lower: "š",  upper: "Š"  }
+  Z:
+    caron:         { lower: "ž",  upper: "Ž"  }
+  C:
+    cedilla:    { lower: "ç",  upper: "Ç"  }
+    caron:         { lower: "č",  upper: "Č"  }
   I:
     acute:      { lower: "í",  upper: "Í"  }
     diaeresis:  { lower: "ï",  upper: "Ï"  }
@@ -28,6 +41,7 @@ characters:
     circumflex: { lower: "ê",  upper: "Ê"  }
     grave:      { lower: "è",  upper: "È"  }
     ae:         { lower: "æ",  upper: "Æ"  }
+    caron:         { lower: "ě",  upper: "Ě"  }
   A:
     acute:      { lower: "á",  upper: "Á"  }
     diaeresis:  { lower: "ä",  upper: "Ä"  }
@@ -50,6 +64,10 @@ characters:
     diaeresis:  { lower: "ü",  upper: "Ü"  }
     circumflex: { lower: "û",  upper: "Û"  }
     grave:      { lower: "ù",  upper: "Ù"  }
+    ring:      { lower: "ů",  upper: "Ů"  }
+  N:
+    caron:         { lower: "ň",  upper: "Ň"  }
+    tilde:      { lower: "ñ",  upper: "Ñ"  }
   consonants:
     cedilla:    { lower: "ç",  upper: "Ç"  }
     eszett:     { lower: "ß",  upper: "ẞ"  }
@@ -103,6 +121,20 @@ localizing:
     linux:   COMPOSE E EQUAL
     macos:   LA(LS(N2))
     windows: ALT+0128
+
+  ###
+  ## D
+  #
+
+  "ç":
+    linux:   COMPOSE COMMA C
+    macos:   LA(C)
+    windows: ALT+0231
+
+  "Ç":
+    linux:   COMPOSE COMMA LS(C)
+    macos:   LA(LS(C))
+    windows: ALT+0199
 
   ###
   ## C
@@ -413,8 +445,30 @@ localizing:
     windows: ALT+0217
 
   ###
+  ## Z
+  #
+  "Ž":
+    # linux:   COMPOSE S S
+    # macos:   LA(S)
+    windows: ALT+0158
+
+  "ž":
+    # linux:   COMPOSE S S
+    # macos:   LA(S)
+    windows: ALT+0142
+
+  ###
   ## S
   #
+  "Š":
+    # linux:   COMPOSE S S
+    # macos:   LA(S)
+    windows: ALT+0154
+
+  "š":
+    # linux:   COMPOSE S S
+    # macos:   LA(S)
+    windows: ALT+0138
 
   "ß":
     linux:   COMPOSE S S
@@ -429,6 +483,15 @@ localizing:
   ###
   ## N
   #
+  "ň":
+    linux:   COMPOSE TILDE N
+    macos:   LA(N) N
+    windows: ALT+0241
+
+  "Ň":
+    linux:   COMPOSE TILDE LS(N)
+    macos:   LA(N) LS(N)
+    windows: ALT+0209
 
   "ñ":
     linux:   COMPOSE TILDE N
