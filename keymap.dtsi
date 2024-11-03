@@ -182,7 +182,7 @@
 #define KEY_RH_C4R4 L
 #define KEY_RH_C5R4 SEMI
 #define KEY_RH_C6R4 SQT
-#define KEY_LH_C6R5 LSHFT
+#define KEY_LH_C6R5 LSFT
 #define KEY_LH_C5R5 Y
 #define KEY_LH_C4R5 X
 #define KEY_LH_C3R5 C
@@ -199,7 +199,7 @@
 #define KEY_RH_C3R5 COMMA
 #define KEY_RH_C4R5 DOT
 #define KEY_RH_C5R5 FSLH
-#define KEY_RH_C6R5 RSHFT
+#define KEY_RH_C6R5 RSFT
 #define KEY_LH_C6R6 0
 #define KEY_LH_C5R6 HOME
 #define KEY_LH_C4R6 PG_UP
@@ -207,8 +207,8 @@
 #define KEY_LH_C2R6 END
 #define KEY_LH_T4 BACKSPACE
 #define KEY_LH_T5 DELETE
-#define KEY_LH_T6 LSFT
-#define KEY_RH_T6 LSFT
+#define KEY_LH_T6 0
+#define KEY_RH_T6 0
 #define KEY_RH_T5 TAB
 #define KEY_RH_T4 SPACE
 #define KEY_RH_C2R6 LPAR
@@ -246,6 +246,56 @@ combos {
         layers = <0 1 2 3 4 5 6 7 8>;
     };
     #endif
+
+    combo_ctrl_tab_switcher {
+        timeout-ms = <COMBO_FIRING_DECAY>;
+        key-positions = <POS_LH_T4 POS_LH_T5>;
+        bindings = <&mod_tab_chord LCTL LAYER_Cursor>;
+        layers = <0 1 2 3 4 5 6 7 8>;
+    };
+
+    combo_sticky_hyper_right {
+        timeout-ms = <COMBO_FIRING_DECAY>;
+        key-positions = <POS_RH_T1 POS_RH_T4>;
+        bindings = <&sk LG(LA(LC(LSHFT)))>;
+        layers = <0 1 2 3 4 5 6 7 8>;
+    };
+
+    combo_sticky_meh_right {
+        timeout-ms = <COMBO_FIRING_DECAY>;
+        key-positions = <POS_RH_T4 POS_RH_T5>;
+        bindings = <&sk LA(LC(LSHFT))>;
+        layers = <0 1 2 3 4 5 6 7 8>;
+    };
+
+    combo_sticky_1shot_shift_left {
+        timeout-ms = <COMBO_FIRING_DECAY>;
+        key-positions = <POS_LH_T4 POS_LH_C2R4>;
+        bindings = <&sticky_key_oneshot LSFT>;
+        layers = <0 1 2 3 4 5 6 7 8>;
+    };
+
+    combo_sticky_1shot_shift_right {
+        timeout-ms = <COMBO_FIRING_DECAY>;
+        key-positions = <POS_RH_T4 POS_RH_C2R4>;
+        bindings = <&sticky_key_oneshot LSFT>;
+        layers = <0 1 2 3 4 5 6 7 8>;
+    };
+
+    combo_caps_word_left {
+        timeout-ms = <COMBO_FIRING_DECAY>;
+        key-positions = <POS_LH_T1 POS_LH_C2R4>;
+        bindings = <&caps_word>;
+        layers = <0 1 2 3 4 5 6 7 8>;
+    };
+
+    combo_caps_word_right {
+        timeout-ms = <COMBO_FIRING_DECAY>;
+        key-positions = <POS_RH_T1 POS_RH_C2R4>;
+        bindings = <&caps_word>;
+        layers = <0 1 2 3 4 5 6 7 8>;
+    };
+
 };
 
 behaviors {
@@ -261,42 +311,37 @@ behaviors {
     //
     // DIFFICULTY_LEVEL specifies your level of expertise with this keymap.
     // It's meant to help newcomers gradually work their way up to mastery.
-    // You can disable this setting by omitting it or assigning a `0` zero.
     //
-    // #define DIFFICULTY_LEVEL 0 // custom (see defaults below)
     // #define DIFFICULTY_LEVEL 1 // novice (500ms)
     // #define DIFFICULTY_LEVEL 2 // slower (400ms)
     // #define DIFFICULTY_LEVEL 3 // normal (300ms)
     // #define DIFFICULTY_LEVEL 4 // faster (200ms)
     // #define DIFFICULTY_LEVEL 5 // expert (100ms)
     //
-    #if defined(DIFFICULTY_LEVEL) && DIFFICULTY_LEVEL > 0
-    #define DIFFICULTY_LEVEL_HOLDING_TIME  ((6 - DIFFICULTY_LEVEL) * 100)
-    #define DIFFICULTY_LEVEL_STREAK_DECAY (((6 - DIFFICULTY_LEVEL) *  50) + 100)
-    #ifndef HOMEY_HOLDING_TIME
-    #define HOMEY_HOLDING_TIME DIFFICULTY_LEVEL_HOLDING_TIME
+    // You can disable this setting by omitting it or assigning a `0` zero,
+    // in which case it will default to my personal set of time thresholds.
+    //
+    // #define DIFFICULTY_LEVEL 0 // sunaku (150ms)
+    //
+    // No matter what difficulty level you choose, you can always override
+    // any settings in this keymap at the beginning of this configuration.
+    //
+    #ifdef DIFFICULTY_LEVEL
+        #if DIFFICULTY_LEVEL > 0 && DIFFICULTY_LEVEL < 6
+            #ifndef TAPPING_RESOLUTION
+                #define TAPPING_RESOLUTION ((6 - DIFFICULTY_LEVEL) * 100)
+            #endif
+        #endif
     #endif
-    #ifndef HOMEY_STREAK_DECAY
-    #define HOMEY_STREAK_DECAY DIFFICULTY_LEVEL_STREAK_DECAY
-    #endif
-    #ifndef INDEX_HOLDING_TIME
-    #define INDEX_HOLDING_TIME DIFFICULTY_LEVEL_HOLDING_TIME
-    #endif
-    #ifndef INDEX_STREAK_DECAY
-    #define INDEX_STREAK_DECAY DIFFICULTY_LEVEL_STREAK_DECAY
-    #endif
-    #ifndef PLAIN_HOLDING_TIME
-    #define PLAIN_HOLDING_TIME DIFFICULTY_LEVEL_HOLDING_TIME
-    #endif
-    #ifndef PLAIN_STREAK_DECAY
-    #define PLAIN_STREAK_DECAY DIFFICULTY_LEVEL_STREAK_DECAY
-    #endif
-    #ifndef SPACE_HOLDING_TIME
-    #define SPACE_HOLDING_TIME DIFFICULTY_LEVEL_HOLDING_TIME
-    #endif
-    #ifndef SPACE_STREAK_DECAY
-    #define SPACE_STREAK_DECAY DIFFICULTY_LEVEL_STREAK_DECAY
-    #endif
+
+    //
+    // TAPPING_RESOLUTION specifies the maximum speed at which the keyboard
+    // confuses your taps as being holds when you type on home row mod keys.
+    // When you lower this value, the same confusion should still occur; but
+    // when you raise this value, you should be able to type normally again.
+    //
+    #ifndef TAPPING_RESOLUTION
+    #define TAPPING_RESOLUTION 150
     #endif
 
     //
@@ -310,12 +355,42 @@ behaviors {
     //#define ENFORCE_BILATERAL
 
     //
+    // SHIFT_FORGIVENESS taps when home row shift is merely held and released,
+    // without any other key having been tapped while the shift was held down.
+    // For example, suppose you hold a home row shift key and, before pressing
+    // another key, suddenly decide that you don't want to use shift after all:
+    //
+    // <1> If this setting is enabled, the underlying tap behavior is triggered
+    //     to type a single character when you release that home row shift key.
+    //
+    // <2> Otherwise, nothing happens when you release that home row shift key.
+    //
+    // This requires the "hold-while-undecided" ZMK feature in a beta firmware:
+    // please select "v24.08-beta1" or newer from the drop-down menu located at
+    // Glove80 Layout Editor > Settings > Advanced Settings > Firmware Version.
+    //
+    // CAUTION: This can interfere with mod-click mouse usage where you hold a
+    // home row shift key and perform mouse actions (move, click, drag & drop):
+    // when you release that home row shift key, its underlying character would
+    // be typed, potentially triggering an unexpected action on your selection!
+    // To prevent the underlying character from being typed, press another key
+    // (such as a dedicated shift key, a neighboring home row mod key, or even
+    // a layer access key) before you release the original home row shift key.
+    //
+    // NOTE: You may potentially encounter "flashing mods" where an application
+    // or operating system action is triggered by a standalone tap of a shift,
+    // but this is unlikely as people regularly tap shift without consequence.
+    //
+    //#define SHIFT_FORGIVENESS
+
+    //
     // The *_FINGER_MOD specify which modifiers are used by home row mod keys.
     // Here, we use Miryoku's "GACS" (Win, Alt, Ctrl, Shift) order by default,
-    // unless OPERATING_SYSTEM is macOS, in which case Win & Ctrl are swapped.
+    // unless OPERATING_SYSTEM is macOS, in which case Win & Ctrl are swapped,
+    // unless MACOS_USE_GACS is also defined to suppress that Win & Ctrl swap.
     //
     #ifndef PINKY_FINGER_MOD
-      #if OPERATING_SYSTEM == 'M'
+      #if OPERATING_SYSTEM == 'M' && !defined(MACOS_USE_GACS)
         #define PINKY_FINGER_MOD LCTL
       #else
         #define PINKY_FINGER_MOD LGUI
@@ -328,7 +403,7 @@ behaviors {
     #define RING2_FINGER_MOD RALT
     #endif
     #ifndef MIDDY_FINGER_MOD
-      #if OPERATING_SYSTEM == 'M'
+      #if OPERATING_SYSTEM == 'M' && !defined(MACOS_USE_GACS)
         #define MIDDY_FINGER_MOD LGUI
       #else
         #define MIDDY_FINGER_MOD LCTL
@@ -341,31 +416,31 @@ behaviors {
     // The following settings let you configure mods individually, per finger:
     //
     #ifndef LEFT_PINKY_MOD
-    #define LEFT_PINKY_MOD  PINKY_FINGER_MOD
+    #define LEFT_PINKY_MOD PINKY_FINGER_MOD
     #endif
     #ifndef RIGHT_PINKY_MOD
     #define RIGHT_PINKY_MOD PINKY_FINGER_MOD
     #endif
     #ifndef LEFT_RING1_MOD
-    #define LEFT_RING1_MOD  RING1_FINGER_MOD
+    #define LEFT_RING1_MOD RING1_FINGER_MOD
     #endif
     #ifndef RIGHT_RING1_MOD
     #define RIGHT_RING1_MOD RING1_FINGER_MOD
     #endif
     #ifndef LEFT_RING2_MOD
-    #define LEFT_RING2_MOD  RING2_FINGER_MOD
+    #define LEFT_RING2_MOD RING2_FINGER_MOD
     #endif
     #ifndef RIGHT_RING2_MOD
     #define RIGHT_RING2_MOD RING2_FINGER_MOD
     #endif
     #ifndef LEFT_MIDDY_MOD
-    #define LEFT_MIDDY_MOD  MIDDY_FINGER_MOD
+    #define LEFT_MIDDY_MOD MIDDY_FINGER_MOD
     #endif
     #ifndef RIGHT_MIDDY_MOD
     #define RIGHT_MIDDY_MOD MIDDY_FINGER_MOD
     #endif
     #ifndef LEFT_INDEX_MOD
-    #define LEFT_INDEX_MOD  INDEX_FINGER_MOD
+    #define LEFT_INDEX_MOD INDEX_FINGER_MOD
     #endif
     #ifndef RIGHT_INDEX_MOD
     #define RIGHT_INDEX_MOD INDEX_FINGER_MOD
@@ -386,7 +461,22 @@ behaviors {
     // (i.e. "register" them) for mod-click mouse usage (e.g. Ctrl-Click).
     //
     #ifndef HOMEY_HOLDING_TIME
-    #define HOMEY_HOLDING_TIME 240 // TAPPING_TERM + ALLOW_CROSSOVER_AFTER
+    #define HOMEY_HOLDING_TIME (TAPPING_RESOLUTION + 90)
+    #endif
+    #ifndef INDEX_HOLDING_TIME
+    #define INDEX_HOLDING_TIME (TAPPING_RESOLUTION + 20)
+    #endif
+    #ifndef MIDDY_HOLDING_TIME
+    #define MIDDY_HOLDING_TIME (TAPPING_RESOLUTION + 60)
+    #endif
+    #ifndef RING1_HOLDING_TIME
+    #define RING1_HOLDING_TIME (TAPPING_RESOLUTION + 90)
+    #endif
+    #ifndef RING2_HOLDING_TIME
+    #define RING2_HOLDING_TIME RING1_HOLDING_TIME
+    #endif
+    #ifndef PINKY_HOLDING_TIME
+    #define PINKY_HOLDING_TIME (TAPPING_RESOLUTION + 110)
     #endif
 
     //
@@ -395,7 +485,7 @@ behaviors {
     // unintended activation of home row mods when you're actively typing.
     //
     #ifndef HOMEY_STREAK_DECAY
-    #define HOMEY_STREAK_DECAY 160
+    #define HOMEY_STREAK_DECAY TAPPING_RESOLUTION
     #endif
 
     //
@@ -403,8 +493,8 @@ behaviors {
     // after tapping a key to hold it again in order to make it auto-repeat.
     //
     #ifndef HOMEY_REPEAT_DECAY
-    #define HOMEY_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
-    #endif
+    #define HOMEY_REPEAT_DECAY (TAPPING_RESOLUTION + 150)
+    #endif // "tap then hold" for key auto-repeat
 
     //
     // CHORD_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
@@ -421,7 +511,7 @@ behaviors {
     // This is specifically for secondary keypresses in multi-mod chords.
     //
     #ifndef CHORD_HOLDING_TIME
-    #define CHORD_HOLDING_TIME 150
+    #define CHORD_HOLDING_TIME TAPPING_RESOLUTION
     #endif
 
     //
@@ -450,20 +540,9 @@ behaviors {
     // NOTE: The "tap-preferred" flavor of ZMK hold-tap for index finger keys
     // allows faster activation of the Shift modifier (without having to wait
     // for the modified key to be released as the "balanced" flavor requires).
-    // Typing streaks and the `hold-trigger-on-release` setting are disabled
-    // for the index fingers so as not to hinder their speed and dexterity.
     //
     #ifndef INDEX_HOLDING_TYPE
     #define INDEX_HOLDING_TYPE "tap-preferred"
-    #endif
-
-    //
-    // INDEX_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // index finger keys in order to send their modifiers to the computer
-    // (i.e. "register" them) for mod-click mouse usage (e.g. Shift-Click).
-    //
-    #ifndef INDEX_HOLDING_TIME
-    #define INDEX_HOLDING_TIME 180
     #endif
 
     //
@@ -472,7 +551,7 @@ behaviors {
     // unintended activation of home row mods when you're actively typing.
     //
     #ifndef INDEX_STREAK_DECAY
-    #define INDEX_STREAK_DECAY 100
+    #define INDEX_STREAK_DECAY (TAPPING_RESOLUTION - 50)
     #endif
 
     //
@@ -480,18 +559,12 @@ behaviors {
     // after tapping a key to hold it again in order to make it auto-repeat.
     //
     #ifndef INDEX_REPEAT_DECAY
-    #define INDEX_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
-    #endif
+    #define INDEX_REPEAT_DECAY (TAPPING_RESOLUTION + 150)
+    #endif // "tap then hold" for key auto-repeat
 
     //
     // PLAIN_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
     // for index fingers (which Miryoku assigns to Shift) on home row keys.
-    //
-    // NOTE: The "tap-preferred" flavor of ZMK hold-tap for index finger keys
-    // allows faster activation of the Shift modifier (without having to wait
-    // for the modified key to be released as the "balanced" flavor requires).
-    // Typing streaks and the `hold-trigger-on-release` setting are disabled
-    // for the index fingers so as not to hinder their speed and dexterity.
     //
     #ifndef PLAIN_HOLDING_TYPE
     #define PLAIN_HOLDING_TYPE HOMEY_HOLDING_TYPE
@@ -503,7 +576,7 @@ behaviors {
     // (i.e. "register" them) for mod-click mouse usage (e.g. Shift-Click).
     //
     #ifndef PLAIN_HOLDING_TIME
-    #define PLAIN_HOLDING_TIME HOMEY_HOLDING_TIME
+    #define PLAIN_HOLDING_TIME (TAPPING_RESOLUTION + 50)
     #endif
 
     //
@@ -520,19 +593,15 @@ behaviors {
     // after tapping a key to hold it again in order to make it auto-repeat.
     //
     #ifndef PLAIN_REPEAT_DECAY
-    #define PLAIN_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
-    #endif
+    #define PLAIN_REPEAT_DECAY (TAPPING_RESOLUTION + 150)
+    #endif // "tap then hold" for key auto-repeat
 
     //
     // THUMB_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
     // for the thumbs (which are assigned to 6 layers in the Miryoku system).
     //
-    // NOTE: The "balanced" flavor of ZMK hold-tap provides instant modifier
-    // activation for the symbol layer (if the tapped symbol key is released
-    // while the thumb layer key is still held down) for quicker programming.
-    //
     #ifndef THUMB_HOLDING_TYPE
-    #define THUMB_HOLDING_TYPE "balanced"
+    #define THUMB_HOLDING_TYPE "tap-preferred"
     #endif
 
     //
@@ -540,7 +609,7 @@ behaviors {
     // a thumb key to activate a layer.  Shorter holds are treated as taps.
     //
     #ifndef THUMB_HOLDING_TIME
-    #define THUMB_HOLDING_TIME 200
+    #define THUMB_HOLDING_TIME (TAPPING_RESOLUTION + 50)
     #endif
 
     //
@@ -548,16 +617,12 @@ behaviors {
     // after tapping a key to hold it again in order to make it auto-repeat.
     //
     #ifndef THUMB_REPEAT_DECAY
-    #define THUMB_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
-    #endif
+    #define THUMB_REPEAT_DECAY (TAPPING_RESOLUTION + 150)
+    #endif // "tap then hold" for key auto-repeat
 
     //
     // SPACE_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
     // for spacebar (assigned to the right thumb's home position by default).
-    //
-    // NOTE: The "balanced" flavor of ZMK hold-tap provides instant modifier
-    // activation for the symbol layer (if the tapped symbol key is released
-    // while the thumb layer key is still held down) for quicker programming.
     //
     #ifndef SPACE_HOLDING_TYPE
     #define SPACE_HOLDING_TYPE THUMB_HOLDING_TYPE
@@ -576,7 +641,7 @@ behaviors {
     // after tapping a key to hold it again in order to make it auto-repeat.
     //
     #ifndef SPACE_REPEAT_DECAY
-    #define SPACE_REPEAT_DECAY 150
+    #define SPACE_REPEAT_DECAY TAPPING_RESOLUTION
     #endif
 
     //
@@ -904,6 +969,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_PINKY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_PINKY_MOD == LSFT || LEFT_PINKY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_pinky_bilateral: homey_left_pinky_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -915,6 +986,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_PINKY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&left_pinky_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_PINKY_MOD == LSFT || LEFT_PINKY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_pinky_hold: homey_left_pinky_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -990,6 +1067,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_PINKY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_PINKY_MOD == LSFT || RIGHT_PINKY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_pinky_bilateral: homey_right_pinky_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1001,6 +1084,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_PINKY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&right_pinky_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_PINKY_MOD == LSFT || RIGHT_PINKY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_pinky_hold: homey_right_pinky_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1076,6 +1165,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_RING1_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_RING1_MOD == LSFT || LEFT_RING1_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_ring1_bilateral: homey_left_ring1_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1087,6 +1182,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_RING1_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&left_ring1_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_RING1_MOD == LSFT || LEFT_RING1_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_ring1_hold: homey_left_ring1_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1162,6 +1263,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_RING1_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_RING1_MOD == LSFT || RIGHT_RING1_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_ring1_bilateral: homey_right_ring1_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1173,6 +1280,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_RING1_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&right_ring1_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_RING1_MOD == LSFT || RIGHT_RING1_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_ring1_hold: homey_right_ring1_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1248,6 +1361,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_RING2_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_RING2_MOD == LSFT || LEFT_RING2_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_ring2_bilateral: homey_left_ring2_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1259,6 +1378,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_RING2_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&left_ring2_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_RING2_MOD == LSFT || LEFT_RING2_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_ring2_hold: homey_left_ring2_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1334,6 +1459,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_RING2_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_RING2_MOD == LSFT || RIGHT_RING2_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_ring2_bilateral: homey_right_ring2_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1345,6 +1476,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_RING2_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&right_ring2_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_RING2_MOD == LSFT || RIGHT_RING2_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_ring2_hold: homey_right_ring2_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1420,6 +1557,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_MIDDY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_MIDDY_MOD == LSFT || LEFT_MIDDY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_middy_bilateral: homey_left_middy_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1431,6 +1574,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_MIDDY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&left_middy_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_MIDDY_MOD == LSFT || LEFT_MIDDY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_middy_hold: homey_left_middy_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1506,6 +1655,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_MIDDY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_MIDDY_MOD == LSFT || RIGHT_MIDDY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_middy_bilateral: homey_right_middy_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1517,6 +1672,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_MIDDY_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&right_middy_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_MIDDY_MOD == LSFT || RIGHT_MIDDY_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_middy_hold: homey_right_middy_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1592,6 +1753,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_INDEX_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_INDEX_MOD == LSFT || LEFT_INDEX_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_index_bilateral: homey_left_index_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1603,6 +1770,12 @@ behaviors {
         require-prior-idle-ms = <LEFT_INDEX_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&left_index_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if LEFT_INDEX_MOD == LSFT || LEFT_INDEX_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     left_index_hold: homey_left_index_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -1678,6 +1851,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_INDEX_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_INDEX_MOD == LSFT || RIGHT_INDEX_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_index_bilateral: homey_right_index_bilateral {
         compatible = "zmk,behavior-hold-tap";
@@ -1689,6 +1868,12 @@ behaviors {
         require-prior-idle-ms = <RIGHT_INDEX_STREAK_DECAY>;
         #binding-cells = <2>;
         bindings = <&right_index_hold>, <&kp>;
+        #ifdef SHIFT_FORGIVENESS
+        #if RIGHT_INDEX_MOD == LSFT || RIGHT_INDEX_MOD == RSFT
+        hold-while-undecided; // requires 24.08-beta1 or newer firmware
+        retro-tap; // tap on standalone hold
+        #endif
+        #endif
     };
     right_index_hold: homey_right_index_hold {
         compatible = "zmk,behavior-macro-one-param";
@@ -3196,13 +3381,6 @@ behaviors {
         #binding-cells = <2>;
         bindings = <&mo>, <&parang_left>;
     };
-    thumb_lower_shift: lower_layer_or_sticky_shift {
-        compatible = "zmk,behavior-hold-tap";
-        flavor = "tap-preferred";
-        tapping-term-ms = <THUMB_HOLDING_TIME>;
-        #binding-cells = <2>;
-        bindings = <&mo>, <&sticky_key_oneshot>;
-    };
     space: thumb_layer_access_spacebar {
         compatible = "zmk,behavior-hold-tap";
         flavor = SPACE_HOLDING_TYPE;
@@ -3360,6 +3538,21 @@ behaviors {
     #define STICKY_1SHOT_DECAY 500
     #endif
 
+    //
+    // STICKY_HOLDING_TIME defines how long you need to hold (milliseconds)
+    // sticky one-shot keys in order to trigger their hold (not tap) action.
+    //
+    #ifndef STICKY_HOLDING_TIME
+    #define STICKY_HOLDING_TIME (TAPPING_RESOLUTION + 50)
+    #endif
+
+    sticky_key_modtap: sticky_key_modtap {
+        compatible = "zmk,behavior-hold-tap";
+        flavor = "tap-preferred";
+        tapping-term-ms = <STICKY_HOLDING_TIME>;
+        #binding-cells = <2>;
+        bindings = <&kp>, <&sticky_key_oneshot>;
+    };
     sticky_key_oneshot: sticky_key_oneshot_macro {
         compatible = "zmk,behavior-macro-one-param";
         wait-ms = <0>;
@@ -3680,7 +3873,6 @@ macros {
         <&macro_tap keystrokes>, \
         <&macro_release &kp LALT>
     #endif
-
     #if OPERATING_SYSTEM == 'L'
         #define UNICODE_MORPH_MODS (MOD_LCTL|MOD_LSFT)
     #elif OPERATING_SYSTEM == 'M'
@@ -3688,7 +3880,6 @@ macros {
     #elif OPERATING_SYSTEM == 'W'
         #define UNICODE_MORPH_MODS MOD_RALT
     #endif
-
     #if OPERATING_SYSTEM == 'L'
         // $ grep "compose:" /usr/share/X11/xkb/rules/base.lst
         // compose:ralt         Right Alt
@@ -3758,7 +3949,6 @@ macros {
         #else
         UNICODE_SEQ_LINUX(&kp B &kp N0)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_degree_sign
@@ -3766,7 +3956,6 @@ macros {
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp B &kp N0)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_degree_sign
@@ -3796,7 +3985,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp A &kp N7)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_section_sign
@@ -3804,7 +3992,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp A &kp N7)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_section_sign
@@ -3834,7 +4021,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp B &kp N6)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_paragraph_sign
@@ -3842,7 +4028,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp B &kp N6)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_paragraph_sign
@@ -3872,7 +4057,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp B &kp A)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_o_ordinal
@@ -3880,7 +4064,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp B &kp A)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_o_ordinal
@@ -3910,7 +4093,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp A &kp A)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_a_ordinal
@@ -3918,7 +4100,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp A &kp A)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_a_ordinal
@@ -3943,7 +4124,6 @@ UNICODE_MORPH_MODS
     UNICODE(world_exclaim_left_macro, /* ¡ */
       #if OPERATING_SYSTEM == 'L'
         UNICODE_SEQ_LINUX(&kp A &kp N1)
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_exclaim_left
@@ -3951,7 +4131,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp A &kp N1)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_exclaim_left
@@ -3981,7 +4160,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp B &kp F)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_question_left
@@ -3989,7 +4167,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp B &kp F)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_question_left
@@ -4014,10 +4191,8 @@ UNICODE_MORPH_MODS
     UNICODE(world_currency_crypto_macro, /* ₿ */
       #if OPERATING_SYSTEM == 'L'
         UNICODE_SEQ_LINUX(&kp N2 &kp N0 &kp B &kp F)
-      
       #elif OPERATING_SYSTEM == 'M'
         UNICODE_SEQ_MACOS(&kp N2 &kp N0 &kp B &kp F)
-      
       #elif OPERATING_SYSTEM == 'W'
         UNICODE_SEQ_WINDOWS(&kp N0 &kp N2 &kp N0 &kp B &kp F)
       #endif
@@ -4037,10 +4212,8 @@ UNICODE_MORPH_MODS
     UNICODE(world_currency_cent_macro, /* ¢ */
       #if OPERATING_SYSTEM == 'L'
         UNICODE_SEQ_LINUX(&kp A &kp N2)
-      
       #elif OPERATING_SYSTEM == 'M'
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp A &kp N2)
-      
       #elif OPERATING_SYSTEM == 'W'
         UNICODE_SEQ_WINDOWS(&kp N0 &kp A &kp N2)
       #endif
@@ -4060,10 +4233,8 @@ UNICODE_MORPH_MODS
     UNICODE(world_currency_sign_macro, /* ¤ */
       #if OPERATING_SYSTEM == 'L'
         UNICODE_SEQ_LINUX(&kp A &kp N4)
-      
       #elif OPERATING_SYSTEM == 'M'
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp A &kp N4)
-      
       #elif OPERATING_SYSTEM == 'W'
         UNICODE_SEQ_WINDOWS(&kp N0 &kp A &kp N4)
       #endif
@@ -4088,7 +4259,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp B &kp N5)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_micro_sign
@@ -4096,7 +4266,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp B &kp N5)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_micro_sign
@@ -4524,7 +4693,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp E &kp D)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_acute_lower
@@ -4532,7 +4700,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp E &kp D)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_acute_lower
@@ -4562,7 +4729,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp C &kp D)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_acute_upper
@@ -4570,7 +4736,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp C &kp D)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_acute_upper
@@ -4606,7 +4771,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp E &kp F)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_diaeresis_lower
@@ -4614,7 +4778,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp E &kp F)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_diaeresis_lower
@@ -4644,7 +4807,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp C &kp F)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_diaeresis_upper
@@ -4652,7 +4814,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp C &kp F)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_diaeresis_upper
@@ -4688,7 +4849,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp E &kp E)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_circumflex_lower
@@ -4696,7 +4856,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp E &kp E)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_circumflex_lower
@@ -4726,7 +4885,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp C &kp E)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_circumflex_upper
@@ -4734,7 +4892,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp C &kp E)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_circumflex_upper
@@ -4770,7 +4927,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp E &kp C)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_grave_lower
@@ -4778,7 +4934,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp E &kp C)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_grave_lower
@@ -4808,7 +4963,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp C &kp C)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_grave_upper
@@ -4816,7 +4970,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp C &kp C)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_i_grave_upper
@@ -4852,7 +5005,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp E &kp N9)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_e_acute_lower
@@ -4860,7 +5012,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp E &kp N9)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_e_acute_lower
@@ -4890,7 +5041,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp C &kp N9)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_e_acute_upper
@@ -4898,7 +5048,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_MACOS(&kp N0 &kp N0 &kp C &kp N9)
         #endif
-      
       #elif OPERATING_SYSTEM == 'W'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_e_acute_upper
@@ -4934,7 +5083,6 @@ UNICODE_MORPH_MODS
         #else
         UNICODE_SEQ_LINUX(&kp E &kp B)
         #endif
-      
       #elif OPERATING_SYSTEM == 'M'
         #ifdef WORLD_USE_COMPOSE
         #define WORLD_USE_COMPOSE_FOR_world_e_diaeresis_lower
