@@ -1,12 +1,20 @@
 precedence: [LSFT, LALT, RALT, LCTL, RCTL, RSFT] # latter overrides former: RSFT overrides all
 
+#
+# transforms:
+#   <group>:
+#     base: <name>
+#     <modifier>: <name>
+#
+# Where <modifier> is either LALT, RALT, LCTL, RCTL, or RSFT.
+#
 transforms:
   I: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave                                 }
-  E: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave,   RALT: ae                     }
+  E: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave,   LALT: oe,      RALT: ae      }
   A: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave,   LALT: tilde,   RALT: ring    }
   Y: { base: acute,   LCTL: diaeresis                                                                }
   O: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave,   LALT: tilde,   RALT: slash   }
-  U: { base: acute,  LCTL: diaeresis, RCTL: circumflex, RSFT: ring,    LALT: grave                             }
+  U: { base: acute,   LCTL: diaeresis, RCTL: circumflex, RSFT: grave                                 }
   consonants:
      { base: cedilla, LCTL: ntilde,    RCTL: eszett                                                  }
   quotes_left:
@@ -15,7 +23,15 @@ transforms:
      { base: angle,   LCTL: curly,     RCTL: low,        RSFT: grave,   LALT: corner1, RALT: corner2 }
   currency:
      { base: dollar,  LCTL: euro,      RCTL: pound,      RSFT: generic, LALT: yen,     RALT: won     }
+  sign:
+    base: copyright
+    LCTL: trademark
 
+#
+# characters:
+#   <group>:
+#     <name>: { <without_shift>, <with_shift> }
+#
 characters:
   D:
     caron:         { lower: "ď",  upper: "Ď"  }
@@ -40,6 +56,7 @@ characters:
     diaeresis:  { lower: "ë",  upper: "Ë"  }
     circumflex: { lower: "ê",  upper: "Ê"  }
     grave:      { lower: "è",  upper: "È"  }
+    oe:         { lower: "œ",  upper: "Œ"  }
     ae:         { lower: "æ",  upper: "Æ"  }
     caron:         { lower: "ě",  upper: "Ě"  }
   A:
@@ -93,7 +110,14 @@ characters:
     won:                 "₩"
     pound:               "£"
     generic:    { lower: "¤",  upper: "₿"  }
+  sign:
+    copyright: { regular: "©", shifted: "®" }
+    trademark: { regular: "™", shifted: "℠" }
 
+#
+# codepoints:
+#   <name>: "<string_of_unicode_characters>"
+#
 codepoints:
   degree_sign:     "°"
   section_sign:    "§"
@@ -106,35 +130,25 @@ codepoints:
   currency_cent:   "¢"
   currency_sign:   "¤"
   currency_crypto: "₿"
-  micro_sign: "µ"
+  micro_sign:      "µ"
 
-localizing:
-  #
-  # - "COMPOSE" is a special keyword that is replaced by COMPOSE_KEY_LINUX
-  # - "ALT+" is a special prefix that is replaced by COMPOSE_SEQ_WINDOWS()
-  #
-  # linux:   https://wiki.linuxquestions.org/wiki/Accented_Characters
-  # macos:   https://sites.psu.edu/symbolcodes/mac/codemac/
-  # windows: https://sites.psu.edu/symbolcodes/windows/codealt/
-
-  "€":
-    linux:   COMPOSE E EQUAL
-    macos:   LA(LS(N2))
-    windows: ALT+0128
-
-  ###
-  ## D
-  #
-
-  "ç":
-    linux:   COMPOSE COMMA C
-    macos:   LA(C)
-    windows: ALT+0231
-
-  "Ç":
-    linux:   COMPOSE COMMA LS(C)
-    macos:   LA(LS(C))
-    windows: ALT+0199
+#
+# compositions:
+#   <character>:
+#     linux:   <keystrokes>
+#     macos:   <keystrokes>
+#     windows: <keystrokes>
+#
+# Where <keystrokes> is composed of ZMK keycodes with some specialities:
+# - "COMPOSE" is a special keyword that is replaced by COMPOSE_KEY_LINUX
+# - "ALT+" is a special prefix that is replaced by COMPOSE_SEQ_WINDOWS()
+#
+# For reference on Compose key shortcuts and the characters they produce:
+# - linux:   https://wiki.linuxquestions.org/wiki/Accented_Characters
+# - macos:   https://sites.psu.edu/symbolcodes/mac/codemac/
+# - windows: https://sites.psu.edu/symbolcodes/windows/codealt/
+#
+compositions:
 
   ###
   ## C
@@ -237,6 +251,16 @@ localizing:
     linux:   COMPOSE GRAVE LS(E)
     macos:   LA(GRAVE) LS(E)
     windows: ALT+0200
+
+  "œ":
+    linux:   COMPOSE O E
+    macos:   LA(Q)
+    windows: ALT+0156
+
+  "Œ":
+    linux:   COMPOSE LS(O) LS(E)
+    macos:   LA(LS(Q))
+    windows: ALT+0140
 
   "æ":
     linux:   COMPOSE A E
@@ -507,17 +531,23 @@ localizing:
   ## signs
   #
 
+  "€":
+    linux:   COMPOSE E EQUAL
+    macos:   LA(LS(N2))
+    windows: ALT+0128
+
   "°":
     linux:   COMPOSE O O
     macos:   LA(LS(N8))
     windows: ALT+0176
 
   "¡":
+    linux:   COMPOSE EXCL EXCL
     macos:   LA(N1)
     windows: ALT+0161
 
   "¿":
-    linux:   COMPOSE EXCL EXCL
+    linux:   COMPOSE QMARK QMARK
     macos:   LA(LS(FSLH))
     windows: ALT+0191
 
@@ -545,3 +575,21 @@ localizing:
     linux:   COMPOSE CARET UNDER A
     macos:   LA(N9)
     windows: ALT+0170
+
+  "©":
+    linux:   COMPOSE O C
+    macos:   LA(G)
+    windows: ALT+0169
+
+  "®":
+    linux:   COMPOSE O R
+    macos:   LA(R)
+    windows: ALT+0174
+
+  "™":
+    linux:   COMPOSE T M
+    macos:   LA(N2)
+    windows: ALT+0153
+
+  "℠":
+    linux:   COMPOSE S M
