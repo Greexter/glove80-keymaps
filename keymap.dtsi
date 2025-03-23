@@ -576,7 +576,7 @@ behaviors {
     // (i.e. "register" them) for mod-click mouse usage (e.g. Shift-Click).
     //
     #ifndef PLAIN_HOLDING_TIME
-    #define PLAIN_HOLDING_TIME (TAPPING_RESOLUTION + 50)
+    #define PLAIN_HOLDING_TIME INDEX_HOLDING_TIME
     #endif
 
     //
@@ -600,8 +600,13 @@ behaviors {
     // THUMB_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
     // for the thumbs (which are assigned to 6 layers in the Miryoku system).
     //
+  //
+    // NOTE: The "balanced" flavor of ZMK hold-tap provides instant modifier
+    // activation for the symbol layer (if the tapped symbol key is released
+    // while the thumb layer key is still held down) for quicker programming.
+    //
     #ifndef THUMB_HOLDING_TYPE
-    #define THUMB_HOLDING_TYPE "tap-preferred"
+    #define THUMB_HOLDING_TYPE "balanced"
     #endif
 
     //
